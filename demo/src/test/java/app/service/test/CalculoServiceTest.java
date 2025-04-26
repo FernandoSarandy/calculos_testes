@@ -4,9 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ public class CalculoServiceTest {
 	
 	@Autowired
 	CalculoService calculoService;
-
+	
 	@Test
 	@DisplayName("Cena 01 - Testando o método somar com valores válidos")
 	void cenario01() {
@@ -94,6 +94,130 @@ public class CalculoServiceTest {
 		assertEquals(8, this.calculoService.mediana(lista));
 	}
 	
+	@Test
+	@DisplayName("Cena 06 - Teste de media ponderada, valor experado.")
+	void cenario06() {
+		List<Integer> lista = new ArrayList<>();
+		lista.add(7);
+		lista.add(8);
+		lista.add(6);
+		
+		List<Integer> listaPeso = new ArrayList<>();
+		listaPeso.add(2);
+		listaPeso.add(3);
+		listaPeso.add(5);
+		
+		double resultado = this.calculoService.mediaPonderada(lista, listaPeso);
+		assertEquals(6.8, resultado);
+	}
 	
+	@Test
+	@DisplayName("Cena 06 - Teste de media ponderada, lista vazias ou nula")
+	void cenario07() {
+		List<Integer> lista = new ArrayList<>();
+		List<Integer> listaPeso = new ArrayList<>();
+		listaPeso.add(2);
+		listaPeso.add(3);
+		listaPeso.add(5);
+		
+		assertThrows(Exception.class,() -> {
+			this.calculoService.mediaPonderada(lista, listaPeso);
+		});
+	}
+	
+	@Test
+	@DisplayName("Cena 06 - Teste de media ponderada, sem valores o suficiente.")
+	void cenario08() {
+		List<Integer> lista = new ArrayList<>();
+		lista.add(7);
+		lista.add(8);
+		lista.add(6);
+		
+		List<Integer> listaPeso = new ArrayList<>();
+		listaPeso.add(2);
+		listaPeso.add(3);
+		
+		assertThrows(Exception.class,() -> {
+			this.calculoService.mediaPonderada(lista, listaPeso);
+		});
+	}
+	
+	@Test
+	@DisplayName("Cena 09 - Testar mediana com lista vazia")
+	void cenario09() {
+		List<Integer> lista = new ArrayList<>();
 
+		assertThrows(Exception.class,() -> {
+			this.calculoService.mediana(lista);
+		});
+	}
+	
+	@Test
+	@DisplayName("Cena 10 - Testar media")
+	void cenario10() {
+		List<Integer> lista = new ArrayList<>();
+		lista.add(1);
+		lista.add(2);
+		lista.add(3);
+		lista.add(4);
+		lista.add(5);
+		
+		double resultado = this.calculoService.media(lista);
+		assertEquals(3, resultado);
+		
+	}
+	
+	@Test
+	@DisplayName("Cena 11 - Teste de unimodal")
+	void cenario11() {
+		List<Integer> lista = new ArrayList<>();
+		lista.add(3);
+		lista.add(2);
+		lista.add(2);
+		lista.add(1);
+		lista.add(6);
+		
+		List<Integer> resultado = calculoService.moda(lista);
+		assertEquals(Arrays.asList(2), resultado);
+	}
+	
+	@Test
+	@DisplayName("Cena 12 - Teste de bimodal")
+	void cenario12() {
+		List<Integer> lista = new ArrayList<>();
+		lista.add(3);
+		lista.add(2);
+		lista.add(2);
+		lista.add(3);
+		lista.add(6);
+		
+		List<Integer> resultado = calculoService.moda(lista);
+		assertEquals(Arrays.asList(2, 3), resultado);
+	}
+	
+	@Test
+	@DisplayName("Cena 13 - Teste de lista sem moda")
+	void cenario13() {
+		List<Integer> lista = new ArrayList<>();
+		lista.add(1);
+		lista.add(2);
+		lista.add(3);
+		lista.add(4);
+		lista.add(6);
+		
+		assertThrows(Exception.class,() -> {
+			this.calculoService.moda(lista);
+		});
+	}
+	
+	@Test
+	@DisplayName("Cena 14 - teste lista vazia")
+	void cenario14() {
+		List<Integer> lista = new ArrayList<>();
+		
+		assertThrows(Exception.class,() -> {
+			this.calculoService.moda(lista);
+		});
+	}
+	
 }

@@ -1,20 +1,18 @@
 package app.service;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import app.dto.Entrada;
 import app.entity.Calculo;
-import app.repository.CalculoRepository;
 
 @Service
 public class CalculoService {
-
-	@Autowired
-	private CalculoRepository calculoRepository;
 
 	public Calculo calcular(Entrada entrada) {
 
@@ -61,5 +59,58 @@ public class CalculoService {
 	        return (meio1 + meio2) / 2;
 	    }
 	}
+	
+	public double mediaPonderada(List<Integer> lista, List<Integer> pesoLista) {
+		double mediaPonderada = 0;
+		
+		if (lista == null || lista.isEmpty() || pesoLista == null || pesoLista.isEmpty()) {
+			throw new IllegalArgumentException("Nenhuma das listas podem ser nula ou vazia");
+		}
+		
+		if(!(lista.size() == pesoLista.size())) {
+			throw new IllegalArgumentException("Não há pesos o bastante para a lista de números");
+		}
+		
+		double somaProdutos = 0;
+		double somaPesos = 0;
+		
+		for(int i = 0; i < lista.size(); i++) {
+			somaProdutos += lista.get(i) * pesoLista.get(i);
+			somaPesos += pesoLista.get(i);
+		}
+		
+		mediaPonderada = somaProdutos / somaPesos;
+		
+		return mediaPonderada;
+	}
+	
+	public List<Integer> moda(List<Integer> lista){
+		if(lista == null || lista.isEmpty()) {
+			throw new IllegalArgumentException("A lista não pode ser nula ou vazia");
+		}
+		
+		Map<Integer, Integer> frequencias = new HashMap<>();
+		
+		for (Integer numero : lista) {
+			frequencias.put(numero, frequencias.getOrDefault(numero, 0) +1 );
+		}
+		
+		int maxFrequencias = Collections.max(frequencias.values());
+		
+		List<Integer> modas = new ArrayList<>();
+		for(Map.Entry<Integer, Integer> entry : frequencias.entrySet()) {
+	        if (entry.getValue() == maxFrequencias) {
+	            modas.add(entry.getKey());
+	        }
+		}
+		
+	    if (modas.size() == lista.size()) {
+	        throw new IllegalArgumentException("Não há moda para lista fornecida");
+	    }
+
+		
+		return modas;
+	}
+	
 
 }
